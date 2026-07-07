@@ -128,7 +128,22 @@ namespace Spa.Controllers
 
                     if (promocion != null)
                     {
-                        servicioSeleccionado = BuscarServicioEnBd("masaje-relajante", "60 min");
+                        servicioSeleccionado = _context.Servicios
+                            .FirstOrDefault(s => s.Nombre == promocion.Nombre);
+
+                        if (servicioSeleccionado == null)
+                        {
+                            servicioSeleccionado = new Servicio
+                            {
+                                Nombre = promocion.Nombre,
+                                PrecioBase = promocion.Precio,
+                                Duracion = "90 min"
+                            };
+
+                            _context.Servicios.Add(servicioSeleccionado);
+                            _context.SaveChanges();
+                        }
+
                         precioPromocion = promocion.Precio;
                     }
                     else
@@ -143,6 +158,8 @@ namespace Spa.Controllers
                     return View("~/Views/Home/cita.cshtml");
                 }
             }
+
+
             else if (Promociones.TryGetValue(servicio, out var promo))
             {
                 servicioSeleccionado = BuscarServicioEnBd(promo.SlugBase, "60 min");

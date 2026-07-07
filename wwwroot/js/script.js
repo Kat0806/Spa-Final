@@ -236,7 +236,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (inputPersonas) {
-        inputPersonas.addEventListener("input", actualizarUIPrecioYPersonas);
+        inputPersonas.addEventListener("input", () => {
+            const valor = inputPersonas.value;
+
+            if (valor === "") {
+                actualizarUIPrecioYPersonas();
+                return;
+            }
+
+            if (parseInt(valor) > 20) {
+                inputPersonas.value = 20;
+            }
+
+            actualizarUIPrecioYPersonas();
+        });
+
+        inputPersonas.addEventListener("blur", () => {
+            if (inputPersonas.value === "" || parseInt(inputPersonas.value) < 1) {
+                inputPersonas.value = 1;
+            }
+
+            actualizarUIPrecioYPersonas();
+        });
     }
 
     // ---- Validación de fecha en tiempo real ----
