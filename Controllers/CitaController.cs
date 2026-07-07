@@ -30,6 +30,10 @@ namespace Spa.Controllers
         [HttpGet]
         public IActionResult Crear()
         {
+            ViewBag.Promociones = _context.Promociones
+                .Where(p => p.Activa)
+                .ToList();
+
             return View("~/Views/Home/cita.cshtml");
         }
 
@@ -113,9 +117,51 @@ namespace Spa.Controllers
             Servicio? servicioSeleccionado;
             decimal? precioPromocion = null;
 
-            if (Promociones.TryGetValue(servicio, out var promo))
+            if (servicio.StartsWith("promo-db-"))
             {
-                // Promoción: usamos el slug base directamente para buscar en BD
+                var idTexto = servicio.Replace("promo-db-", "");
+
+                if (int.TryParse(idTexto, out int promoId))
+                {
+                    var promocion = _context.Promociones
+                        .FirstOrDefault(p => p.Id == promoId && p.Activa);
+
+                    if (promocion != null)
+                    {
+                        servicioSeleccionado = _context.Servicios
+                            .FirstOrDefault(s => s.Nombre == promocion.Nombre);
+
+                        if (servicioSeleccionado == null)
+                        {
+                            servicioSeleccionado = new Servicio
+                            {
+                                Nombre = promocion.Nombre,
+                                PrecioBase = promocion.Precio,
+                                Duracion = "90 min"
+                            };
+
+                            _context.Servicios.Add(servicioSeleccionado);
+                            _context.SaveChanges();
+                        }
+
+                        precioPromocion = promocion.Precio;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("servicio", "La promoción seleccionada no está disponible.");
+                        return View("~/Views/Home/cita.cshtml");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("servicio", "Promoción inválida.");
+                    return View("~/Views/Home/cita.cshtml");
+                }
+            }
+
+
+            else if (Promociones.TryGetValue(servicio, out var promo))
+            {
                 servicioSeleccionado = BuscarServicioEnBd(promo.SlugBase, "60 min");
                 precioPromocion = promo.Precio;
             }
