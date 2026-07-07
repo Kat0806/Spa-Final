@@ -49,19 +49,65 @@
                 <div class="form-group">
                     <label for="servicio">Servicio</label>
                     <select id="servicio" name="servicio" required>
-                        <option value="">Tipo Servicio</option>
-                        <option value="masaje-relajante">Masaje Relajante</option>
-                        <option value="masaje-piedras-calientes">Masaje de piedras calientes</option>
-                        <option value="masaje-descontracturante">Masaje descontracturante</option>
-                        <option value="facial-express">Facial express</option>
-                        <option value="facial-profundo">Facial profundo</option>
-                        <option value="facial-rejuvenecedor">Facial rejuvenecedor</option>
-                        <option value="camara-vapor">Cámara a vapor</option>
-                        <option value="camara-seca">Cámara seca</option>
-                        <option value="tina-hidromasaje">Tina de hidromasajes</option>
-                        <option value="promo-mes">Promoción del mes</option>
-                        <option value="promo-cumple">Promoción de cumpleaños</option>
-                        <option value="promo-ritual-relax">Promoción ritual clásico</option>
+                        
+
+                            <option value="">Tipo Servicio</option>
+
+                            <option value="masaje-relajante"
+                                    selected="@(ViewBag.ServicioSeleccionado == "masaje-relajante")">
+                                Masaje Relajante
+                            </option>
+
+                            <option value="masaje-piedras-calientes"
+                                    selected="@(ViewBag.ServicioSeleccionado == "masaje-piedras-calientes")">
+                                Masaje de piedras calientes
+                            </option>
+
+                            <option value="masaje-descontracturante"
+                                    selected="@(ViewBag.ServicioSeleccionado == "masaje-descontracturante")">
+                                Masaje descontracturante
+                            </option>
+
+                            <option value="facial-express"
+                                    selected="@(ViewBag.ServicioSeleccionado == "facial-express")">
+                                Facial express
+                            </option>
+
+                            <option value="facial-profundo"
+                                    selected="@(ViewBag.ServicioSeleccionado == "facial-profundo")">
+                                Facial profundo
+                            </option>
+
+                            <option value="facial-rejuvenecedor"
+                                    selected="@(ViewBag.ServicioSeleccionado == "facial-rejuvenecedor")">
+                                Facial rejuvenecedor
+                            </option>
+
+                            <option value="camara-vapor"
+                                    selected="@(ViewBag.ServicioSeleccionado == "camara-vapor")">
+                                Cámara a vapor
+                            </option>
+
+                            <option value="camara-seca"
+                                    selected="@(ViewBag.ServicioSeleccionado == "camara-seca")">
+                                Cámara seca
+                            </option>
+
+                            <option value="tina-hidromasaje"
+                                    selected="@(ViewBag.ServicioSeleccionado == "tina-hidromasaje")">
+                                Tina de hidromasajes
+                            </option>
+                            
+                            @if (ViewBag.Promociones != null)
+                            {
+                                foreach (var promo in ViewBag.Promociones)
+                                {
+                                    <option value="promo-db-@promo.Id" data-precio="@promo.Precio">
+                                        @promo.Nombre
+                                    </option>
+                                }
+                            }
+                            
                     </select>
                 </div>
                 <div class="form-group">

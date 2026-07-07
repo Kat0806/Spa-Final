@@ -161,6 +161,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const duracion = selectDuracion.value;
         const personas = parseInt(inputPersonas.value) || 1;
         let total = 0;
+        if (servicio.startsWith("promo-db-")) {
+            campoPersonas.style.display = "block";
+
+            const opcionSeleccionada = selectServicio.options[selectServicio.selectedIndex];
+            const precioPromo = parseFloat(opcionSeleccionada.dataset.precio) || 0;
+
+            total = precioPromo * personas;
+
+            precioFinal.textContent = `Precio total: S/ ${total.toFixed(2)}`;
+            return;
+        }
 
         if (servicio === "promo-cumple" || servicio === "promo-ritual-relax") {
             campoPersonas.style.display = "block";
@@ -189,14 +200,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function actualizarDuraciones() {
         const servicio = selectServicio.value;
-        const duraciones = duracionesPorServicio[servicio] || [];
+
         selectDuracion.innerHTML = "";
+
+        if (servicio.startsWith("promo-db-")) {
+            const option = document.createElement("option");
+            option.value = "90 min";
+            option.textContent = "90 min";
+            option.selected = true;
+
+            selectDuracion.appendChild(option);
+
+            actualizarUIPrecioYPersonas();
+            return;
+        }
+
+        const duraciones = duracionesPorServicio[servicio] || [];
+
         duraciones.forEach((dur) => {
             const option = document.createElement("option");
             option.value = dur;
             option.textContent = dur;
             selectDuracion.appendChild(option);
         });
+
         actualizarUIPrecioYPersonas();
     }
 
